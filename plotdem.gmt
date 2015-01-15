@@ -1,0 +1,62 @@
+#!/bin/bash
+
+##
+## plot fluxrouting output of simple tests
+##
+
+#if [ "$#" -ne 3 ]; then
+#    echo "planeflux.gmt - plot fluxrouting output of simple plane examples"
+#    echo "usage:   ./planeflux.gmt <geometry> <fluxdata> <outdir>"
+#fi
+
+nx=256
+ny=256
+
+zmax=250
+
+
+geometry=$1
+#fluxdata=$2
+outdir='.'
+#ps='flux6.ps'
+ps=$outdir/$(basename $geometry .nc)'.ps'
+
+gmtset PS_MEDIA A4 \
+  PS_PAGE_ORIENTATION portrait \
+  FONT_LABEL 12p \
+  FONT_ANNOT_PRIMARY 12p \
+  PROJ_LENGTH_UNIT cm
+
+reg="-R0/$nx/0/$ny/0/$zmax"
+pro="-JX8c/8c -JZ2c"
+
+
+
+## 2d stuff
+#psbasemap -R0/9/0/9 -JX8c/8c -B0 -K > $ps
+#makecpt -Cgray -T0/1/0.1 -I > c.cpt
+#grdimage $fluxdata?flux -R -J -Cc.cpt -O -K >> $ps
+# contourlines of topography
+#grdcontour $geometry?surf -R -J -C1 -A- -T0.1i/0.05i -W0.5p -O -K >> $ps
+
+
+# open file
+psxy -R0/1/0/1 -JX1 -K /dev/null > $ps
+
+# title and ticks
+#psbasemap -R -J -Ba1f0.2/a1f0.2:."plane6":WSne -O -K >> $ps
+psbasemap $reg $pro -Ba64/a64:."":wsNE -p60/30 -O -K >> $ps
+
+makecpt -Cgray -T0/$zmax/1 -I > c.cpt
+grdview $geometry?surf $reg  $pro -p60/30 -Cc.cpt -O -K \
+         -N-6+glightgray -Qs -Bz100+l"Surface (m)" -BneswZ >> $ps
+
+
+
+
+# close file
+psxy -R0/1/0/1 -JX1 -O /dev/null >> $ps
+
+ps2raster -A $ps
+
+rm -f gmt.conf gmt.history c.cpt
