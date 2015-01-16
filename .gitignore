@@ -6,3 +6,5 @@
 *.nc
 *.jpg
 
+
+.DS_Store
