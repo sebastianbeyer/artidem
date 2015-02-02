@@ -58,22 +58,40 @@ class GeometryData:
         root_grp.createDimension('y', self.ny)
 
         # variables
-        nc_x = root_grp.createVariable('x value', 'f4', ('x',))
-        nc_y = root_grp.createVariable('y value', 'f4', ('y',))
+        nc_x = root_grp.createVariable('x', 'f4', ('x',))
+        nc_x.units = 'm'
+        nc_x.axis = 'X'
+        nc_x.long_name = 'X-coordinate in Cartesian system'
+        nc_x.standard_name = 'projection_x_coordinate'
+        nc_y = root_grp.createVariable('y', 'f4', ('y',))
+        nc_y.units = 'm'
+        nc_y.axis = 'Y'
+        nc_y.long_name = 'Y-coordinate in Cartesian system'
+        nc_y.standard_name = 'projection_y_coordinate'
 
         # geometry
         nc_surface = root_grp.createVariable('surf', 'f4', ('x', 'y',))
         nc_surface.units = 'm'
+        nc_surface.standard_name = 'surface_altitude'
+        nc_surface.long_name = 'ice upper surface elevation'
         nc_bed = root_grp.createVariable('bed', 'f4', ('x', 'y',))
         nc_bed.units = 'm'
+        nc_bed.standard_name = 'ice_base_altitude'
+        nc_bed.long_name = 'ice lower surface elevation'
         nc_thickness = root_grp.createVariable('thickness', 'f4', ('x', 'y',))
         nc_thickness.units = 'm'
+        nc_thickness.standard_name = 'land_ice_thickness'
+        nc_thickness.long_name = 'land ice thickness'
 
         nc_meltrates = root_grp.createVariable('meltrates', 'f4', ('x', 'y',))
-        nc_meltrates.units = 'm/s Water equivalent'
+        nc_meltrates.units = 'm/s'
+        nc_meltrates.comment = 'Water equivalent'
+        nc_meltrates.standard_name = 'land_ice_basal_melt_rate'
+        nc_meltrates.long_name = 'ice basal melt rate in m/s water equivalent (rho_w = 1000)'
         nc_base_temp = root_grp.createVariable('base_temp', 'f4', ('x', 'y',))
-        nc_base_temp.units = 'K'
-
+        nc_base_temp.units = 'C_deg'
+        nc_base_temp.standard_name = 'basal_temperature'
+        nc_base_temp.long_name = 'ice temperature at base'
 
         # assign to netcdf
         nc_x[:] = self.xvals
@@ -84,7 +102,6 @@ class GeometryData:
         nc_thickness[:] = self.H
         nc_meltrates[:] = self.A
         nc_base_temp[:] = self.T_b
-
 
         root_grp.close()
 
@@ -117,15 +134,6 @@ ny = 256
 xvals =  np.arange(0,nx)
 yvals =  np.arange(0,ny)
 X, Y = np.meshgrid(xvals, yvals)
-
-
-# generate different geometries
-# This is very weird and we really need a better solution!
-geoms = np.array([X, -X+9, Y, -Y+9,
-                  (X+Y)/2, (X-Y+9)/2, (-X+Y+9)/2, (-X-Y+18)/2])
-
-melts_y = np.array([8, 1, 4, 4, 8, 8, 1, 1])
-melts_x = np.array([4, 4, 8, 1, 8, 1, 8, 1])
 
 
 octaves = 5
