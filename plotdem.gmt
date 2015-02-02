@@ -4,10 +4,10 @@
 ## plot fluxrouting output of simple tests
 ##
 
-#if [ "$#" -ne 3 ]; then
-#    echo "planeflux.gmt - plot fluxrouting output of simple plane examples"
-#    echo "usage:   ./planeflux.gmt <geometry> <fluxdata> <outdir>"
-#fi
+if [ "$#" -ne 1 ]; then
+    echo "plotdem.gmt - plot dem gerated by artidem.py"
+    echo "usage:   ./plotdem.gmt <geometry> "
+fi
 
 nx=256
 ny=256
@@ -16,9 +16,7 @@ zmax=250
 
 
 geometry=$1
-#fluxdata=$2
 outdir='.'
-#ps='flux6.ps'
 ps=$outdir/$(basename $geometry .nc)'.ps'
 
 gmtset PS_MEDIA A4 \
