@@ -149,6 +149,9 @@ for y in range(ny):
 bump = makeGaussian(nx,nx/2)
 H = H*bump
 
+# lower everything by 20m to make it a real island
+H = H-20
+
 
 gdata = GeometryData()
 gdata.InitFromSurface(H)
