@@ -70,25 +70,25 @@ class GeometryData:
         nc_y.standard_name = 'projection_y_coordinate'
 
         # geometry
-        nc_surface = root_grp.createVariable('surf', 'f4', ('x', 'y',))
+        nc_surface = root_grp.createVariable('surf', 'f4', ('y', 'x',))
         nc_surface.units = 'm'
         nc_surface.standard_name = 'surface_altitude'
         nc_surface.long_name = 'ice upper surface elevation'
-        nc_bed = root_grp.createVariable('bed', 'f4', ('x', 'y',))
+        nc_bed = root_grp.createVariable('bed', 'f4', ('y', 'x',))
         nc_bed.units = 'm'
         nc_bed.standard_name = 'ice_base_altitude'
         nc_bed.long_name = 'ice lower surface elevation'
-        nc_thickness = root_grp.createVariable('thickness', 'f4', ('x', 'y',))
+        nc_thickness = root_grp.createVariable('thickness', 'f4', ('y', 'x',))
         nc_thickness.units = 'm'
         nc_thickness.standard_name = 'land_ice_thickness'
         nc_thickness.long_name = 'land ice thickness'
 
-        nc_meltrates = root_grp.createVariable('meltrates', 'f4', ('x', 'y',))
+        nc_meltrates = root_grp.createVariable('meltrates', 'f4', ('y', 'x',))
         nc_meltrates.units = 'm/s'
         nc_meltrates.comment = 'Water equivalent'
         nc_meltrates.standard_name = 'land_ice_basal_melt_rate'
         nc_meltrates.long_name = 'ice basal melt rate in m/s water equivalent (rho_w = 1000)'
-        nc_base_temp = root_grp.createVariable('base_temp', 'f4', ('x', 'y',))
+        nc_base_temp = root_grp.createVariable('base_temp', 'f4', ('y', 'x',))
         nc_base_temp.units = 'C_deg'
         nc_base_temp.standard_name = 'basal_temperature'
         nc_base_temp.long_name = 'ice temperature at base'
