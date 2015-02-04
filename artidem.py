@@ -46,6 +46,9 @@ class GeometryData:
     def SetMeltPos(self,x,y):
         self.A[x,y] = 1
 
+    def setMask(self,mask):
+        self.mask = mask
+
     def WriteNC(self,ncfile):
         """Writes the data to netcdf file"""
 
@@ -93,6 +96,12 @@ class GeometryData:
         nc_base_temp.standard_name = 'basal_temperature'
         nc_base_temp.long_name = 'ice temperature at base'
 
+        # mask
+        nc_mask = root_grp.createVariable('mask', 'i4', ('y', 'x',))
+        nc_mask.long_name = "ice-type (ice-free/grounded/floating/ocean) integer mask"
+        nc_mask.flag_meanings = "ice_free_bedrock grounded_ice floating_ice ice_free_ocean"
+        nc_mask.flag_values = "1 2 3 4"
+
         # assign to netcdf
         nc_x[:] = self.xvals
         nc_y[:] = self.yvals
@@ -102,6 +111,7 @@ class GeometryData:
         nc_thickness[:] = self.H
         nc_meltrates[:] = self.A
         nc_base_temp[:] = self.T_b
+        nc_mask[:] = self.mask
 
         root_grp.close()
 
@@ -125,7 +135,16 @@ def makeGaussian(size, fwhm = 3, center=None):
 
     return np.exp(-4*np.log(2) * ((x-x0)**2 + (y-y0)**2) / fwhm**2)
 
-
+def makeMask(H, level=0):
+    """ Make a mask, of grounded ice and no ice
+        1 - ice_free_bedrock
+        2 - grounded_ice
+        3 - floating_ice
+        4 - ice_free_ocean
+        (same as pism 0.6) """
+    ocean = (H <= level).astype(int)*4
+    grounded = (H > level).astype(int)*2
+    return ocean + grounded
 
 
 # generate grid
@@ -148,14 +167,17 @@ for y in range(ny):
 # make island
 bump = makeGaussian(nx,nx/2)
 H = H*bump
-
 # lower everything by 20m to make it a real island
 H = H-20
+
+#generate mask
+mask = makeMask(H)
 
 
 gdata = GeometryData()
 gdata.InitFromSurface(H)
 gdata.SetMeltPos(int(nx/2),int(ny/2))
+gdata.setMask(mask)
 gdata.WriteNC('./artidemisland.nc')
 
 
