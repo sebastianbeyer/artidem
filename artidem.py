@@ -148,8 +148,8 @@ def makeMask(H, level=0):
 
 
 # generate grid
-nx = 256
-ny = 256
+nx = 7
+ny = 7
 xvals =  np.arange(0,nx)
 yvals =  np.arange(0,ny)
 X, Y = np.meshgrid(xvals, yvals)
@@ -158,17 +158,27 @@ X, Y = np.meshgrid(xvals, yvals)
 octaves = 5
 freq = 16.0*octaves
 
-H = np.zeros((nx, ny))
-for y in range(ny):
-    for x in range(nx):
-        H[x,y] = int(snoise2(x / freq, y / freq, octaves) * 127.0 + 128)
+H = np.ones((nx, ny))
+H[0,:] = 2
+H[6,:] = 2
+H[:,0] = 2
+H[:,6] = 2
+H[0,2] = 0
+
+
+
+
+
+#for y in range(ny):
+#    for x in range(nx):
+#        H[x,y] = int(snoise2(x / freq, y / freq, octaves) * 127.0 + 128)
 
 
 # make island
-bump = makeGaussian(nx,nx/2)
-H = H*bump
+#bump = makeGaussian(nx,nx/2)
+#H = H*bump
 # lower everything by 20m to make it a real island
-H = H-20
+#H = H-20
 
 #generate mask
 mask = makeMask(H)
